@@ -92,3 +92,20 @@ APIKit for OData 4.0: http://studio.mulesoft.org/s4/apikit-for-odata4/
 > APIkit for OData 4 contains a `Transform to SQL Select` operation to transform the input OData `GET` request to a SQL SELECT query. 
 > The operation is useful when combined with the select operation of the Database Connector. 
 > The output payload is a `prepared statement` and the attributes are a map of `prepared statement parameters`.
+
+## GET Request Example
+```
+localhost:8081/api/Customers('NW124')
+```
+
+## POST customer request
+
+```
+curl --location --request POST 'http://localhost:8081/api/Customers' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+   "CompanyName": "Mulesoft",
+   "ContactName": "Customer 123",
+   "CustomerID": "NW123"
+}'
+```

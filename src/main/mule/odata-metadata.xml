@@ -84,83 +84,153 @@ output application/json
 			<apikit-odata:transformation-parameters
 				strictSearchTermMatch="true" />
 		</apikit-odata:transform-to-sql-select>
-    <db:select doc:name="Select" doc:id="33aa7972-8baf-443f-9712-079740772c39" config-ref="Database_Config">
-			<db:sql ><![CDATA[#[payload]]]></db:sql>
-			<db:input-parameters ><![CDATA[#[attributes.queryParameters]]]></db:input-parameters>
+		<db:select doc:name="Select"
+			doc:id="33aa7972-8baf-443f-9712-079740772c39"
+			config-ref="Database_Config">
+			<db:sql><![CDATA[#[payload]]]></db:sql>
+			<db:input-parameters><![CDATA[#[attributes.queryParameters]]]></db:input-parameters>
 		</db:select>
-		<apikit-odata:serialize-entity config-ref="odata-metadata-config" path="/Customers" method="GET">
-      <apikit-odata:inbound-content><![CDATA[#[%dw 2.0 output application/json --- payload[0]]]]></apikit-odata:inbound-content>
-    </apikit-odata:serialize-entity>
-  </flow>
-  <flow name="POST\Customers\ENTITY">
-    <apikit-odata:request-entity-listener config-ref="odata-metadata-config" path="/Customers" method="POST" />
-    <logger level="INFO" message="In POST\Customers\ENTITY flow" />
-    <apikit-odata:serialize-entity config-ref="odata-metadata-config" path="/Customers" method="POST">
-      <apikit-odata:inbound-content>#[%dw 2.0 output application/json --- payload]</apikit-odata:inbound-content>
-    </apikit-odata:serialize-entity>
-  </flow>
-  <flow name="PATCH\Customers\ENTITY">
-    <apikit-odata:request-entity-listener config-ref="odata-metadata-config" path="/Customers" method="PATCH" />
-    <logger level="INFO" message="In PATCH\Customers\ENTITY flow" />
-    <apikit-odata:serialize-entity config-ref="odata-metadata-config" path="/Customers" method="PATCH">
-      <apikit-odata:inbound-content>#[%dw 2.0 output application/json --- payload]</apikit-odata:inbound-content>
-    </apikit-odata:serialize-entity>
-  </flow>
-  <flow name="PUT\Customers\ENTITY">
-    <apikit-odata:request-entity-listener config-ref="odata-metadata-config" path="/Customers" method="PUT" />
-    <logger level="INFO" message="In PUT\Customers\ENTITY flow" />
-    <apikit-odata:serialize-entity config-ref="odata-metadata-config" path="/Customers" method="PUT">
-      <apikit-odata:inbound-content>#[%dw 2.0 output application/json --- payload]</apikit-odata:inbound-content>
-    </apikit-odata:serialize-entity>
-  </flow>
-  <flow name="DELETE\Customers\ENTITY">
-    <apikit-odata:request-entity-listener config-ref="odata-metadata-config" path="/Customers" method="DELETE" />
-    <logger level="INFO" message="In DELETE\Customers\ENTITY flow" />
-  </flow>
-  <flow name="GET\Customers\ENTITY_COLLECTION">
-    <apikit-odata:request-entity-collection-listener config-ref="odata-metadata-config" path="/Customers" method="GET" />
-    <logger level="INFO" message="In GET\Customers\ENTITY_COLLECTION flow" />
-    <apikit-odata:serialize-entity-collection config-ref="odata-metadata-config" path="/Customers" method="GET">
-      <apikit-odata:inbound-content>#[%dw 2.0 output application/json --- { "value": payload }]</apikit-odata:inbound-content>
-    </apikit-odata:serialize-entity-collection>
-  </flow>
-  <flow name="GET\Orders\ENTITY">
-    <apikit-odata:request-entity-listener config-ref="odata-metadata-config" path="/Orders" method="GET" />
-    <logger level="INFO" message="In GET\Orders\ENTITY flow" />
-    <apikit-odata:serialize-entity config-ref="odata-metadata-config" path="/Orders" method="GET">
-      <apikit-odata:inbound-content>#[%dw 2.0 output application/json --- payload]</apikit-odata:inbound-content>
-    </apikit-odata:serialize-entity>
-  </flow>
-  <flow name="POST\Orders\ENTITY">
-    <apikit-odata:request-entity-listener config-ref="odata-metadata-config" path="/Orders" method="POST" />
-    <logger level="INFO" message="In POST\Orders\ENTITY flow" />
-    <apikit-odata:serialize-entity config-ref="odata-metadata-config" path="/Orders" method="POST">
-      <apikit-odata:inbound-content>#[%dw 2.0 output application/json --- payload]</apikit-odata:inbound-content>
-    </apikit-odata:serialize-entity>
-  </flow>
-  <flow name="PATCH\Orders\ENTITY">
-    <apikit-odata:request-entity-listener config-ref="odata-metadata-config" path="/Orders" method="PATCH" />
-    <logger level="INFO" message="In PATCH\Orders\ENTITY flow" />
-    <apikit-odata:serialize-entity config-ref="odata-metadata-config" path="/Orders" method="PATCH">
-      <apikit-odata:inbound-content>#[%dw 2.0 output application/json --- payload]</apikit-odata:inbound-content>
-    </apikit-odata:serialize-entity>
-  </flow>
-  <flow name="PUT\Orders\ENTITY">
-    <apikit-odata:request-entity-listener config-ref="odata-metadata-config" path="/Orders" method="PUT" />
-    <logger level="INFO" message="In PUT\Orders\ENTITY flow" />
-    <apikit-odata:serialize-entity config-ref="odata-metadata-config" path="/Orders" method="PUT">
-      <apikit-odata:inbound-content>#[%dw 2.0 output application/json --- payload]</apikit-odata:inbound-content>
-    </apikit-odata:serialize-entity>
-  </flow>
-  <flow name="DELETE\Orders\ENTITY">
-    <apikit-odata:request-entity-listener config-ref="odata-metadata-config" path="/Orders" method="DELETE" />
-    <logger level="INFO" message="In DELETE\Orders\ENTITY flow" />
-  </flow>
-  <flow name="GET\Orders\ENTITY_COLLECTION">
-    <apikit-odata:request-entity-collection-listener config-ref="odata-metadata-config" path="/Orders" method="GET" />
-    <logger level="INFO" message="In GET\Orders\ENTITY_COLLECTION flow" />
-    <apikit-odata:serialize-entity-collection config-ref="odata-metadata-config" path="/Orders" method="GET">
-      <apikit-odata:inbound-content>#[%dw 2.0 output application/json --- { "value": payload }]</apikit-odata:inbound-content>
-    </apikit-odata:serialize-entity-collection>
-  </flow>
+		<apikit-odata:serialize-entity
+			config-ref="odata-metadata-config" path="/Customers" method="GET">
+			<apikit-odata:inbound-content><![CDATA[#[%dw 2.0 output application/json --- payload[0]]]]></apikit-odata:inbound-content>
+		</apikit-odata:serialize-entity>
+	</flow>
+	<flow name="POST\Customers\ENTITY">
+		<apikit-odata:request-entity-listener
+			config-ref="odata-metadata-config" path="/Customers" method="POST" />
+		<set-variable
+			value="#[attributes.odataRequestAttributes]"
+			doc:name="Set Variable odataRequestAttributes"
+			doc:id="9bb2e19f-45d1-4c81-87ed-5a67ea0dad31"
+			variableName="odataRequestAttributes" />
+		<set-variable value="#[attributes.entitySetName]"
+			doc:name="Set Variable entitySetName"
+			doc:id="4f1d23b6-a502-4209-8cc6-d3d58ced7152"
+			variableName="entitySetName" />
+		<set-variable value='#[payload.CustomerID]'
+			doc:name="Set Variable CustomerID"
+			doc:id="08c6a37c-2661-4a2b-a485-dc0968dd0f9c"
+			variableName="customerID" />
+		<ee:transform doc:name="Transform Message"
+			doc:id="02b306b4-5f40-47d2-86e8-6c620c7d995f">
+			<ee:message>
+				<ee:set-payload
+					resource="dataweaves/sql/sql_insert_entity.dwl" />
+			</ee:message>
+		</ee:transform>
+		<db:insert doc:name="Insert"
+			doc:id="50db4c11-c588-49c6-9e44-90e1d20a5131"
+			config-ref="Database_Config">
+			<db:sql><![CDATA[#[payload]]]></db:sql>
+		</db:insert>
+		<apikit-odata:transform-to-sql-select
+			doc:name="Transform to sql select"
+			doc:id="ade55230-d96d-4395-9807-639313995d8b"
+			config-ref="odata-metadata-config"
+			entitySetName="#[vars.entitySetName]">
+			<apikit-odata:request-parameters
+				entityTypeName="#[vars.odataRequestAttributes.entityTypeName]"
+				entityTypeFields="#[vars.odataRequestAttributes.entityTypeFields]"
+				systemQueryOptions="#[vars.odataRequestAttributes.systemQueryOptions]">
+				<apikit-odata:entity-type-keys>
+					<apikit-odata:entity-type-key
+						key="CustomerID"
+						value="#[&quot;'&quot; ++ vars.customerID as String ++ &quot;'&quot;]" />
+				</apikit-odata:entity-type-keys>
+			</apikit-odata:request-parameters>
+		</apikit-odata:transform-to-sql-select>
+		<db:select doc:name="Select"
+			doc:id="ecb28b25-1e41-4bf0-9bcb-c5740291360a"
+			config-ref="Database_Config">
+			<db:sql><![CDATA[#[payload]]]></db:sql>
+			<db:input-parameters><![CDATA[#[attributes.queryParameters]]]></db:input-parameters>
+		</db:select>
+		<apikit-odata:serialize-entity config-ref="odata-metadata-config" path="/Customers" method="POST">
+			<apikit-odata:inbound-content>#[%dw 2.0 output application/json --- payload]</apikit-odata:inbound-content>
+		</apikit-odata:serialize-entity>
+	</flow>
+	<flow name="PATCH\Customers\ENTITY">
+		<apikit-odata:request-entity-listener
+			config-ref="odata-metadata-config" path="/Customers" method="PATCH" />
+		<logger level="INFO" message="In PATCH\Customers\ENTITY flow" />
+		<apikit-odata:serialize-entity
+			config-ref="odata-metadata-config" path="/Customers" method="PATCH">
+			<apikit-odata:inbound-content>#[%dw 2.0 output application/json --- payload]</apikit-odata:inbound-content>
+		</apikit-odata:serialize-entity>
+	</flow>
+	<flow name="PUT\Customers\ENTITY">
+		<apikit-odata:request-entity-listener
+			config-ref="odata-metadata-config" path="/Customers" method="PUT" />
+		<logger level="INFO" message="In PUT\Customers\ENTITY flow" />
+		<apikit-odata:serialize-entity
+			config-ref="odata-metadata-config" path="/Customers" method="PUT">
+			<apikit-odata:inbound-content>#[%dw 2.0 output application/json --- payload]</apikit-odata:inbound-content>
+		</apikit-odata:serialize-entity>
+	</flow>
+	<flow name="DELETE\Customers\ENTITY">
+		<apikit-odata:request-entity-listener
+			config-ref="odata-metadata-config" path="/Customers" method="DELETE" />
+		<logger level="INFO" message="In DELETE\Customers\ENTITY flow" />
+	</flow>
+	<flow name="GET\Customers\ENTITY_COLLECTION">
+		<apikit-odata:request-entity-collection-listener
+			config-ref="odata-metadata-config" path="/Customers" method="GET" />
+		<logger level="INFO"
+			message="In GET\Customers\ENTITY_COLLECTION flow" />
+		<apikit-odata:serialize-entity-collection
+			config-ref="odata-metadata-config" path="/Customers" method="GET">
+			<apikit-odata:inbound-content>#[%dw 2.0 output application/json --- { "value": payload }]</apikit-odata:inbound-content>
+		</apikit-odata:serialize-entity-collection>
+	</flow>
+	<flow name="GET\Orders\ENTITY">
+		<apikit-odata:request-entity-listener
+			config-ref="odata-metadata-config" path="/Orders" method="GET" />
+		<logger level="INFO" message="In GET\Orders\ENTITY flow" />
+		<apikit-odata:serialize-entity
+			config-ref="odata-metadata-config" path="/Orders" method="GET">
+			<apikit-odata:inbound-content>#[%dw 2.0 output application/json --- payload]</apikit-odata:inbound-content>
+		</apikit-odata:serialize-entity>
+	</flow>
+	<flow name="POST\Orders\ENTITY">
+		<apikit-odata:request-entity-listener
+			config-ref="odata-metadata-config" path="/Orders" method="POST" />
+		<logger level="INFO" message="In POST\Orders\ENTITY flow" />
+		<apikit-odata:serialize-entity
+			config-ref="odata-metadata-config" path="/Orders" method="POST">
+			<apikit-odata:inbound-content>#[%dw 2.0 output application/json --- payload]</apikit-odata:inbound-content>
+		</apikit-odata:serialize-entity>
+	</flow>
+	<flow name="PATCH\Orders\ENTITY">
+		<apikit-odata:request-entity-listener
+			config-ref="odata-metadata-config" path="/Orders" method="PATCH" />
+		<logger level="INFO" message="In PATCH\Orders\ENTITY flow" />
+		<apikit-odata:serialize-entity
+			config-ref="odata-metadata-config" path="/Orders" method="PATCH">
+			<apikit-odata:inbound-content>#[%dw 2.0 output application/json --- payload]</apikit-odata:inbound-content>
+		</apikit-odata:serialize-entity>
+	</flow>
+	<flow name="PUT\Orders\ENTITY">
+		<apikit-odata:request-entity-listener
+			config-ref="odata-metadata-config" path="/Orders" method="PUT" />
+		<logger level="INFO" message="In PUT\Orders\ENTITY flow" />
+		<apikit-odata:serialize-entity
+			config-ref="odata-metadata-config" path="/Orders" method="PUT">
+			<apikit-odata:inbound-content>#[%dw 2.0 output application/json --- payload]</apikit-odata:inbound-content>
+		</apikit-odata:serialize-entity>
+	</flow>
+	<flow name="DELETE\Orders\ENTITY">
+		<apikit-odata:request-entity-listener
+			config-ref="odata-metadata-config" path="/Orders" method="DELETE" />
+		<logger level="INFO" message="In DELETE\Orders\ENTITY flow" />
+	</flow>
+	<flow name="GET\Orders\ENTITY_COLLECTION">
+		<apikit-odata:request-entity-collection-listener
+			config-ref="odata-metadata-config" path="/Orders" method="GET" />
+		<logger level="INFO"
+			message="In GET\Orders\ENTITY_COLLECTION flow" />
+		<apikit-odata:serialize-entity-collection
+			config-ref="odata-metadata-config" path="/Orders" method="GET">
+			<apikit-odata:inbound-content>#[%dw 2.0 output application/json --- { "value": payload }]</apikit-odata:inbound-content>
+		</apikit-odata:serialize-entity-collection>
+	</flow>
 </mule>
