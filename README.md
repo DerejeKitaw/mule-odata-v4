@@ -1,5 +1,6 @@
 ## Install APIKit for OData
 >[Source](https://docs.mulesoft.com/apikit/4.x/apikit-4-for-odata)
+
 > Select Help > Install New Software
 ```
 Name field, type APIkit for ODATA Update Site
@@ -11,44 +12,61 @@ APIKit for OData 4.0: http://studio.mulesoft.org/s4/apikit-for-odata4/
 > [Source](https://docs.mulesoft.com/apikit/4.x/creating-an-odatav4-api-with-apikit)
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
-  <edmx:DataServices>
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="odata4.namespace">
-      <EntityType Name="Customers"> 
-        <Key> 
-          <PropertyRef Name="CustomerID" />
-        </Key>
-        <Property Name="CompanyName" Type="Edm.String" MaxLength="40" Unicode="false" />
-        <Property Name="ContactName" Type="Edm.String" MaxLength="30" Unicode="false" />
-        <Property Name="ContactTitle" Type="Edm.String" MaxLength="30" Unicode="false" />
-        <Property Name="CustomerID" Type="Edm.String" Nullable="false" MaxLength="5" Unicode="false" />
-        <NavigationProperty Name="Orders" Type="Collection(odata4.namespace.Orders)"/>
-      </EntityType>
-      <EntityType Name="Orders">
-        <Key>
-          <PropertyRef Name="OrderID" />
-          <PropertyRef Name="ShipName" />
-        </Key>
-        <Property Name="Freight" Type="Edm.Decimal" Precision="19" Scale="4" />
-        <Property Name="OrderDate" Type="Edm.DateTimeOffset" Unicode="false" />
-        <Property Name="OrderID" Type="Edm.Int32" Nullable="false" Unicode="false" />
-        <Property Name="CustomerID" Type="Edm.String" MaxLength="5"/>
-        <Property Name="Price" Type="Edm.Single" Unicode="false" />
-        <Property Name="Priority" Type="Edm.Int16" Unicode="false" />
-        <Property Name="ShipAddress" Type="Edm.String" MaxLength="60" Unicode="false" />
-        <Property Name="ShipName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="false" />
-        <NavigationProperty Name="Customer" Type="odata4.namespace.Customers">
-        	<ReferentialConstraint Property="CustomerID" ReferencedProperty="CustomerID" />
-        </NavigationProperty>
-      </EntityType>
-      <EntityContainer Name="OData4EntityContainer"> 
-        <EntitySet Name="Customers" EntityType="odata4.namespace.Customers"> 
-        	<NavigationPropertyBinding Path="Orders" Target="Orders"/>
-        </EntitySet>
-        <EntitySet Name="Orders" EntityType="odata4.namespace.Orders"/>
-      </EntityContainer>
-    </Schema>
-  </edmx:DataServices>
+<edmx:Edmx Version="4.0"
+	xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+	<edmx:DataServices>
+		<Schema xmlns="http://docs.oasis-open.org/odata/ns/edm"
+			Namespace="odata4.namespace">
+			<EntityType Name="Customers">
+				<Key>
+					<PropertyRef Name="CustomerID" />
+				</Key>
+				<Property Name="CompanyName" Type="Edm.String"
+					MaxLength="40" Unicode="false" />
+				<Property Name="ContactName" Type="Edm.String"
+					MaxLength="30" Unicode="false" />
+				<Property Name="ContactTitle" Type="Edm.String"
+					MaxLength="30" Unicode="false" />
+				<Property Name="CustomerID" Type="Edm.String"
+					Nullable="false" MaxLength="5" Unicode="false" />
+				<NavigationProperty Name="Orders"
+					Type="Collection(odata4.namespace.Orders)" />
+			</EntityType>
+			<EntityType Name="Orders">
+				<Key>
+					<PropertyRef Name="OrderID" />
+					<PropertyRef Name="ShipName" />
+				</Key>
+				<Property Name="Freight" Type="Edm.Decimal" Precision="19"
+					Scale="4" />
+				<Property Name="OrderDate" Type="Edm.DateTimeOffset"
+					Unicode="false" />
+				<Property Name="OrderID" Type="Edm.Int32" Nullable="false"
+					Unicode="false" />
+				<Property Name="CustomerID" Type="Edm.String" MaxLength="5" />
+				<Property Name="Price" Type="Edm.Single" Unicode="false" />
+				<Property Name="Priority" Type="Edm.Int16" Unicode="false" />
+				<Property Name="ShipAddress" Type="Edm.String"
+					MaxLength="60" Unicode="false" />
+				<Property Name="ShipName" Type="Edm.String"
+					Nullable="false" MaxLength="40" Unicode="false" />
+				<NavigationProperty Name="Customer"
+					Type="odata4.namespace.Customers">
+					<ReferentialConstraint Property="CustomerID"
+						ReferencedProperty="CustomerID" />
+				</NavigationProperty>
+			</EntityType>
+			<EntityContainer Name="OData4EntityContainer">
+				<EntitySet Name="Customers"
+					EntityType="odata4.namespace.Customers">
+					<NavigationPropertyBinding Path="Orders"
+						Target="Orders" />
+				</EntitySet>
+				<EntitySet Name="Orders"
+					EntityType="odata4.namespace.Orders" />
+			</EntityContainer>
+		</Schema>
+	</edmx:DataServices>
 </edmx:Edmx>
 ```
 > `EntityType` defines the type and its properties
@@ -62,3 +80,15 @@ APIKit for OData 4.0: http://studio.mulesoft.org/s4/apikit-for-odata4/
 
 ## odata-metadata.csdl.xml file > Generate Mule OData 4 API
 
+## Handle OData System Query Options
+
+> Within each `On Entity Request` and `On Entity Collection Request` listener you can access a `systemQueryOptions` **attribute** that maps to each OData query option ($select, $orderBy, $count, etc.). 
+- For example, to access the `$select` value you use the following expression:
+```
+#[attributes.odataRequestAttributes.systemQueryOptions.select]
+```
+
+## Use The Transform to SQL Operation
+> APIkit for OData 4 contains a `Transform to SQL Select` operation to transform the input OData `GET` request to a SQL SELECT query. 
+> The operation is useful when combined with the select operation of the Database Connector. 
+> The output payload is a `prepared statement` and the attributes are a map of `prepared statement parameters`.

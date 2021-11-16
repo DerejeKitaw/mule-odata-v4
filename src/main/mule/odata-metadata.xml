@@ -1,27 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit-odata="http://www.mulesoft.org/schema/mule/apikit-odata" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/apikit-odata http://www.mulesoft.org/schema/mule/apikit-odata/current/mule-apikit-odata.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
-  <apikit-odata:config name="odata-metadata-config" apiDefinition="api/odata-metadata.csdl.xml" />
-  <http:listener-config name="HTTP_Listener_Config">
-    <http:listener-connection host="0.0.0.0" port="8081" />
-  </http:listener-config>
-  <flow name="main-odata-flow">
-    <http:listener config-ref="HTTP_Listener_Config" path="/api/*">
-      <http:response statusCode="#[attributes.statusCode default 200]">
-        <http:headers>#[attributes.headers default {}]</http:headers>
-      </http:response>
-      <http:error-response statusCode="#[vars.statusCode default 500]">
-        <http:body>#[payload]</http:body>
-        <http:headers>#[vars.headers default {}]</http:headers>
-      </http:error-response>
-    </http:listener>
-    <apikit-odata:route config-ref="odata-metadata-config">
-      <apikit-odata:http-request-parameters listenerPath="#[attributes.listenerPath]" method="#[attributes.method]" scheme="#[upper(attributes.scheme)]" host="#[attributes.headers.'host']" httpHeaders="#[attributes.headers]" queryString="#[attributes.queryString]" maskedRequestPath="#[attributes.maskedRequestPath]" />
-    </apikit-odata:route>
-    <error-handler name="Error_Handler">
-      <on-error-propagate name="On_Error_Propagate" enableNotifications="true" logException="true" type="MULE:ANY">
-        <ee:transform>
-          <ee:message>
-            <ee:set-payload><![CDATA[%dw 2.0
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:apikit-odata="http://www.mulesoft.org/schema/mule/apikit-odata"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/apikit-odata http://www.mulesoft.org/schema/mule/apikit-odata/current/mule-apikit-odata.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd 
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<apikit-odata:config name="odata-metadata-config"
+		apiDefinition="api/odata-metadata.csdl.xml" />
+	<http:listener-config name="HTTP_Listener_Config">
+		<http:listener-connection host="0.0.0.0"
+			port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config"
+		doc:id="49941a60-93c9-4952-b536-23ee5d32776f">
+		<db:my-sql-connection host="localhost"
+			port="3306" user="root" password="root"
+			database="apikit-odata-example" />
+	</db:config>
+	<flow name="main-odata-flow">
+		<http:listener config-ref="HTTP_Listener_Config"
+			path="/api/*">
+			<http:response
+				statusCode="#[attributes.statusCode default 200]">
+				<http:headers>#[attributes.headers default {}]</http:headers>
+			</http:response>
+			<http:error-response
+				statusCode="#[vars.statusCode default 500]">
+				<http:body>#[payload]</http:body>
+				<http:headers>#[vars.headers default {}]</http:headers>
+			</http:error-response>
+		</http:listener>
+		<apikit-odata:route
+			config-ref="odata-metadata-config">
+			<apikit-odata:http-request-parameters
+				listenerPath="#[attributes.listenerPath]"
+				method="#[attributes.method]" scheme="#[upper(attributes.scheme)]"
+				host="#[attributes.headers.'host']"
+				httpHeaders="#[attributes.headers]"
+				queryString="#[attributes.queryString]"
+				maskedRequestPath="#[attributes.maskedRequestPath]" />
+		</apikit-odata:route>
+		<error-handler name="Error_Handler">
+			<on-error-propagate name="On_Error_Propagate"
+				enableNotifications="true" logException="true" type="MULE:ANY">
+				<ee:transform>
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
@@ -33,19 +60,36 @@ output application/json
 		innererror: error.errorMessage.payload.innerError default error.childErrors
 	}
 }]]></ee:set-payload>
-          </ee:message>
-          <ee:variables>
-            <ee:set-variable variableName="statusCode"><![CDATA[error.errorMessage.payload.statusCode default 500]]></ee:set-variable>
-          </ee:variables>
-        </ee:transform>
-      </on-error-propagate>
-    </error-handler>
-  </flow>
-  <flow name="GET\Customers\ENTITY">
-    <apikit-odata:request-entity-listener config-ref="odata-metadata-config" path="/Customers" method="GET" />
-    <logger level="INFO" message="In GET\Customers\ENTITY flow" />
-    <apikit-odata:serialize-entity config-ref="odata-metadata-config" path="/Customers" method="GET">
-      <apikit-odata:inbound-content>#[%dw 2.0 output application/json --- payload]</apikit-odata:inbound-content>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="statusCode"><![CDATA[error.errorMessage.payload.statusCode default 500]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="GET\Customers\ENTITY">
+		<apikit-odata:request-entity-listener
+			config-ref="odata-metadata-config" path="/Customers" method="GET" />
+		<apikit-odata:transform-to-sql-select
+			doc:name="Transform to sql select"
+			doc:id="9226f4da-2432-4b72-863a-fe0d8337cc84"
+			config-ref="odata-metadata-config"
+			entitySetName="#[attributes.entitySetName]">
+			<apikit-odata:request-parameters
+				entityTypeFields="#[attributes.odataRequestAttributes.entityTypeFields]"
+				entityTypeKeys="#[attributes.odataRequestAttributes.entityTypeKeys]"
+				systemQueryOptions="#[attributes.odataRequestAttributes.systemQueryOptions]"
+				entityTypeName="#[attributes.odataRequestAttributes.entityTypeName]" />
+			<apikit-odata:transformation-parameters
+				strictSearchTermMatch="true" />
+		</apikit-odata:transform-to-sql-select>
+    <db:select doc:name="Select" doc:id="33aa7972-8baf-443f-9712-079740772c39" config-ref="Database_Config">
+			<db:sql ><![CDATA[#[payload]]]></db:sql>
+			<db:input-parameters ><![CDATA[#[attributes.queryParameters]]]></db:input-parameters>
+		</db:select>
+		<apikit-odata:serialize-entity config-ref="odata-metadata-config" path="/Customers" method="GET">
+      <apikit-odata:inbound-content><![CDATA[#[%dw 2.0 output application/json --- payload[0]]]]></apikit-odata:inbound-content>
     </apikit-odata:serialize-entity>
   </flow>
   <flow name="POST\Customers\ENTITY">
