@@ -53,7 +53,7 @@ output application/json
 ---
 {
 	error: {
-		code: error.errorMessage.payload.code default "UNKNOWN",
+		code: error.errorMessage.payload.code default vars.statusCode,
 		message: error.errorMessage.payload.message default error.description,
 		target: error.errorMessage.payload.target,
 		details: error.errorMessage.payload.details default [{code: "UNKNOWN", message: error.detailedDescription, target: null}],
@@ -148,6 +148,12 @@ output application/json
 		<apikit-odata:serialize-entity config-ref="odata-metadata-config" path="/Customers" method="POST">
 			<apikit-odata:inbound-content>#[%dw 2.0 output application/json --- payload]</apikit-odata:inbound-content>
 		</apikit-odata:serialize-entity>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="96d19e03-de3b-4185-a658-4ed541b28e60" type="DB:QUERY_EXECUTION">
+				<set-payload value="#[payload]" doc:name="Set Payload" doc:id="247745c6-e745-4884-8e1f-d41ee41c6b26" />
+				<set-variable value="403" doc:name="Set Variable" doc:id="3fdce967-ed4e-4e34-b8ac-aba419779c1b" variableName="statusCode"/>
+			</on-error-propagate>
+		</error-handler>
 	</flow>
 	<flow name="PATCH\Customers\ENTITY">
 		<apikit-odata:request-entity-listener
